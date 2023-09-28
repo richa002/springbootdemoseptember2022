@@ -25,6 +25,15 @@ import java.util.*;
 
 @SpringBootApplication
 public class DemoApplication implements  CommandLineRunner{
+
+
+
+
+
+
+
+
+
     @Autowired
     CustomerService service;
     RestTemplate restTemplate = new RestTemplate();
@@ -65,7 +74,8 @@ public class DemoApplication implements  CommandLineRunner{
 
     private void testGetAllRecords() {
 //        List<Customer> customers = Arrays.asList(restTemplate.getForObject(fetchAllUrl, Customer[].class));
-        ResponseEntity<List<Customer>> listResponseEntity = restTemplate.exchange(fetchAllUrl, HttpMethod.GET, null, ParameterizedTypeReference.forType(List.class));
+        ResponseEntity<List<Customer>> listResponseEntity =
+                restTemplate.exchange(fetchAllUrl, HttpMethod.GET, null, ParameterizedTypeReference.forType(List.class));
         List<Customer> list = listResponseEntity.getBody();
     }
 

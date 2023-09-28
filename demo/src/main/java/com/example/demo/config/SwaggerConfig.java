@@ -18,13 +18,21 @@ import java.util.Collections;
 public class SwaggerConfig {
 
     @Bean
-    public Docket api() {
+    public Docket mySwaggerbean() {
+
+
+//       return new Docket(DocumentationType.SWAGGER_2)
+//                .select()
+//                .apis(RequestHandlerSelectors.basePackage("com.example.demo.controller"))
+//                .paths(PathSelectors.any()).build();
+
+
         return new Docket(DocumentationType.SWAGGER_2) .select()
-             //   .apis(RequestHandlerSelectors.any())   // if we want to include every package
+                //.apis(RequestHandlerSelectors.any())   // if we want to include every package
                 .apis(RequestHandlerSelectors.basePackage("com.example.demo"))  // to specify any apescific package
-                .paths(PathSelectors.ant("/customers/*"))  // to specify specific path
+               // .paths(PathSelectors.ant("/customers/*"))  // to specify specific path
                // .paths(PathSelectors.ant("/dummy/*"))
-               // .paths(PathSelectors.any())   // to select all paths
+                .paths(PathSelectors.any())   // to select all paths
                 .build();
     }
 

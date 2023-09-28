@@ -2,12 +2,14 @@ package com.example.demo.controller;
 
 import com.example.demo.entity.Customer;
 import com.example.demo.error.EntityNotFoundException;
+import com.example.demo.error.ErrorMessage;
 import com.example.demo.service.CustomerService;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.MimeType;
@@ -32,7 +34,7 @@ public class AppController {
         return " hello to the app";
     }
 
-    @GetMapping("/hello/{id}/{subId}")
+    @GetMapping("/hello/{id}/{subId}") // /hello/2/201?name=richa&age=2
     public String test(@PathVariable("id") Long id,
                        @PathVariable("subId") Long subId,
                        @RequestParam("name") String name) {
@@ -52,6 +54,19 @@ public class AppController {
         return customerService.getById(custId);
     }
 
+    @ApiOperation("Get a customer by its id")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Found the customer"),
+            @ApiResponse(code = 400, message = "Invalid id supplied"),
+    })
+    @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    // for both path param and query param @ApiParam is used for swagger documentation
+    public Customer fetchCustomer2(@ApiParam(name = "id", value = "Id of customer", required = true, example = "1")
+                                  @PathVariable("id") Long custId) {
+
+        return customerService.getById(custId);
+    }
+
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public List<Customer> fetchAllCustomers() {
 
@@ -59,17 +74,22 @@ public class AppController {
     }
 
     @PostMapping(consumes = "application/json")
-    public ResponseEntity<String> createCustomer(@Valid @RequestBody Customer customer) {
+    public ResponseEntity<Object> createCustomer(@RequestBody Customer customer) {
         if (customer == null || customer.getCustomerId() <= 0) {
-            return ResponseEntity.badRequest().body("INVALID REQUEST");
+            return ResponseEntity.badRequest().body(new ErrorMessage("Invalid Rewuest", 10002));
         }
         customerService.save(customer);
         return ResponseEntity.ok("SAVED SUCCESSFULLY");
 
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("book/{id}")// ---> book/2
     public ResponseEntity<Customer> updateCustomer(@PathVariable("id") Long custId, @RequestBody Customer customer) {
+       return ResponseEntity.ok(customerService.updateProfile(custId, customer));
+    }
+
+    @PutMapping("book/xyz/{id}")// ---> book/2
+    public ResponseEntity<Customer> updateCustomer2(@PathVariable("id") Long custId, @RequestBody Customer customer) {
         return ResponseEntity.ok(customerService.updateProfile(custId, customer));
     }
 
